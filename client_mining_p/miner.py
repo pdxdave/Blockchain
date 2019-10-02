@@ -7,7 +7,6 @@ import sys
 # TODO: Implement functionality to search for a proof 
 
 def proof_of_work(previous_proof):
-
     # Truth be told, I took much of this from blockchain.py
     # Do not need self since we're not calling a class here
     proof = 0
@@ -46,9 +45,16 @@ if __name__ == '__main__':
         # TODO: We're going to have to research how to do a POST in Python
         # HINT: Research `requests` and remember we're sending our data as JSON
         # source https://www.w3schools.com/python/showpython.asp?filename=demo_requests_post
-        send_it_out = {}
-        r = requests.post(url = API_ENDPOINT, data = data)
+        send_it_out = {'proof': new_proof}
+        r = requests.post('http://localhost/mine', json = send_it_out)
         # TODO: If the server responds with 'New Block Forged'
         # add 1 to the number of coins mined and print it.  Otherwise,
         # print the message from the server.
-        pass
+        # Taking a leap here based on the wording. 'If' suggests an if statement
+        # and server responds that we're looking for it to pass a status code.
+        # https://www.restapitutorial.com/httpstatuscodes.html
+        if r.status_code is 201:
+            print("Coin")
+            coins_mined += 1
+            print("Your coint count is:", coins_mined)
+
