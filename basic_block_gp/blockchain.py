@@ -122,8 +122,8 @@ class Blockchain(object):
         guess = f'{block_string}{proof}'.encode()  # needs encoding to make it work
         guess_hash = hashlib.sha256(guess).hexdigest() # hash the guess
 
-        # testing for six zeros
-        return guess_hash[:6] == "000000"
+        # TODO change testing back to six zeros
+        return guess_hash[:3] == "000"
 
     def valid_chain(self, chain):
         """
@@ -174,17 +174,24 @@ def mine():
     # The sender is "0" to signify that this node has mine a new coin
     # The recipient is the current node, it did the mining!
     # The amount is 1 coin as a reward for mining the next block
+    blockchain.new_transaction(
+         sender = "0", 
+         recipient = node_identifier,
+         amount=1,
+    )
 
     # Forge the new Block by adding it to the chain
     # TODO
+    previous_hash = blockchain.hash(blockchain.last_block)
+    block = blockchain.new_block(proof, previous_hash)
 
     # Send a response with the new block
     response = {
-        # 'message': "New Block Forged",
-        # 'index': block['index'],
-        # 'transactions': block['transactions'],
-        # 'proof': block['proof'],
-        # 'previous_hash': block['previous_hash'],
+        'message': "New Block Forged",
+        'index': block['index'],
+        'transactions': block['transactions'],
+        'proof': block['proof'],
+        'previous_hash': block['previous_hash'],
         'message': f"Proof found {proof}"
     }
     return jsonify(response), 200
