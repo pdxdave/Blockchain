@@ -85,7 +85,7 @@ class Blockchain(object):
     def last_block(self):
         return self.chain[-1]
 
-    def proof_of_work(self, block):
+    def proof_of_work(self, block):  # START HERE
         """
         Simple Proof of Work Algorithm
         Find a number p such that hash(last_block_string, p) contains 6 leading
@@ -93,11 +93,20 @@ class Blockchain(object):
         :return: A valid proof for the provided block
         """
         # TODO
-        pass
-        # return proof
+        # THIS WILL STRINGIFY THE OBJECT. 
+        # dump will stringify self.last_bloc, then it'll be sorted, and encode
+        # will encode it to anything python will understand.
+        block_string = json.dumps(block, sort_keys=True).encode()
+
+        # THIS IS BASICALLY GUESS WORK
+        proof = 0
+        while self.valid_proof(block_string, proof) is False:
+            proof += 1  # If the first # doesn't work, check the next one
+
+        return proof
 
     @staticmethod
-    def valid_proof(block_string, proof):
+    def valid_proof(block_string, proof):  # STEP TWO
         """
         Validates the Proof:  Does hash(block_string, proof) contain 6
         leading zeroes?  Return true if the proof is valid
@@ -109,8 +118,12 @@ class Blockchain(object):
         :return: True if the resulting hash is a valid proof, False otherwise
         """
         # TODO
-        pass
         # return True or False
+        guess = f'{block_string}{proof}'.encode()  # needs encoding to make it work
+        guess_hash = hashlib.sha256(guess).hexdigest() # hash the guess
+
+        # testing for six zeros
+        return guess_hash[:6] == "000000"
 
     def valid_chain(self, chain):
         """
@@ -151,10 +164,10 @@ node_identifier = str(uuid4()).replace('-', '')
 blockchain = Blockchain()
 
 
-@app.route('/mine', methods=['GET'])
+@app.route('/mine', methods=['GET']) # STEP THREE - output
 def mine():
     # We run the proof of work algorithm to get the next proof...
-    proof = blockchain.proof_of_work()
+    proof = blockchain.proof_of_work(blockchain.last_block)
 
     # We must receive a reward for finding the proof.
     # TODO:
@@ -167,11 +180,12 @@ def mine():
 
     # Send a response with the new block
     response = {
-        'message': "New Block Forged",
-        'index': block['index'],
-        'transactions': block['transactions'],
-        'proof': block['proof'],
-        'previous_hash': block['previous_hash'],
+        # 'message': "New Block Forged",
+        # 'index': block['index'],
+        # 'transactions': block['transactions'],
+        # 'proof': block['proof'],
+        # 'previous_hash': block['previous_hash'],
+        'message': f"Proof found {proof}"
     }
     return jsonify(response), 200
 
