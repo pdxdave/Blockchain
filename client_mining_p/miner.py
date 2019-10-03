@@ -37,7 +37,7 @@ if __name__ == '__main__':
         # keeping this source for future reference https://www.geeksforgeeks.org/get-post-requests-using-python/
         response = requests.get("http://localhost:5000/last_block")
         data = response.json()
-        previous_proof = data['proof']
+        previous_proof = data['proof'] // change
         # TODO: When found, POST it to the server {"proof": new_proof}
         # I don't understand this.  Wouldn't it be
         new_proof = proof_of_work(previous_proof)
@@ -57,4 +57,6 @@ if __name__ == '__main__':
             print("Coin")
             coins_mined += 1
             print("Your coin count is: ", coins_mined)
+
+########## Class solutions ######################
 

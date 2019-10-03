@@ -38,3 +38,7 @@ At command line: pipenv shell
 
 * How to run on port 5000?  python3 blockchain.py
 
+## Notes for October 3
+
+* Consensus in blockchain is about agreement in the next block
+
